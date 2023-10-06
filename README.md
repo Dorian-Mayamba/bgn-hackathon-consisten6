@@ -28,3 +28,15 @@ then right ls command in your terminal or dir if you use cmd. Check if manage.py
 Copy this url to your browser: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 It should display a successful install page
+
+
+# Get your code merged
+
+To get your code merged into the repository, you will to have git installed in your machine. Download link below
+
+[https://git-scm.com/download/win](https://git-scm.com/download/win)
+
+once it is download and installed, clone the repository by writing this command below
+
+- git clone https://github.com/Dorian-Mayamba/bgn-hackathon-consisten6.git
+
