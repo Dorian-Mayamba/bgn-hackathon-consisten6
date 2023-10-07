@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'personal_financial_advisorApp'
+    'account',
+    'drf_yasg',
+    'rest_framework',
+    'chatbot'
 ]
 
 MIDDLEWARE = [
