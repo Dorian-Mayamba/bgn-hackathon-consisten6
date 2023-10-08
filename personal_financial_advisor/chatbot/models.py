@@ -3,7 +3,7 @@ from account.models import User
 
 # Create your models here.
 class Chat(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE) I WIL UNCOMMENT THIS LATER WHEN I HAVE DONE THE LOGIN
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
     message = models.TextField()
     response = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

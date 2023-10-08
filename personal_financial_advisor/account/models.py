@@ -22,7 +22,7 @@ class FinancialStatement(models.Model):
     disposable_income =  models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
     current_debt =  models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
     time_to_pay =  models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
-    risk_tolerance =  models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    risk_tolerance = models.CharField(max_length=255, null=False)
     current_goal = models.CharField(max_length=255, null=False)
     currency = models.CharField(max_length=255, null=False)
 
