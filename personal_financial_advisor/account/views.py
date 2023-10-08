@@ -246,9 +246,10 @@ def Statementchatbot(request,user_id):
     This view accepts POST requests with a message and returns a chatbot response.
     The message and response are serialized using the ChatSerializer and saved.
     """
+    user=User.objects.get(id=user_id)
 
     if request.method == 'POST':
-        financial_statement = FinancialStatement.objects.get(user=user_id)  
+        financial_statement = FinancialStatement.objects.get(user=user)  
         if financial_statement:
             # Manually set the message you want to send to the chatbot
             message_template = """   You are a financial advisor. What can you tell me about my financial situation below? Also, consider the following:
