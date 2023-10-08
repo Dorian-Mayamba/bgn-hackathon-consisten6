@@ -166,7 +166,7 @@ def create_statement(request, user_id):
     if request.method == "POST":
         # Deserialize the data and set the user
         data = request.data
-        data['user'] = user.id  # Set the user ID in the request data
+        data['user'] = user  # Set the user ID in the request data
 
         serializer = FinancialStatementSerializer(data=data)
 
