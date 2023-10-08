@@ -11,7 +11,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status 
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import *
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.exceptions import ValidationError, PermissionDenied
@@ -105,7 +105,7 @@ def login(request):
             })
         
 
-
+@swagger_auto_schema(method='get')
 @api_view(['GET'])
 def get_users(request):
     if request.method == "GET":
@@ -150,3 +150,43 @@ def get_users(request):
 #                 return Response({"error": "Unable to get a response from the chatbot"}, status=500)
 
 #         return Response({"error": serializer.errors}, status=400)
+
+@swagger_auto_schema(
+        method='post',
+        request_body=FinancialStatementSerializer()
+)
+@api_view(['POST'])
+def create_statement(request):
+     if request.method == "POST":
+        #Allows user to signup or create account
+        serializer = FinancialStatementSerializer(data=request.data) #deserialize the data
+        
+        if serializer.is_valid(): #validate the data that was passed
+            serializer.save()
+            data = {
+                'message' : 'success',
+                'data'  : serializer.data
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            data = {
+                'message' : 'failed',
+                'error'  : serializer.errors
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
+@swagger_auto_schema(method='get')
+@api_view(['GET'])
+def get_statements(request):
+    if request.method == "GET":
+         statements = FinancialStatement.objects.all()
+         print("Statements fetched:", statements.values())
+         # Serialize user data
+         serializer = FinancialStatementSerializer(statements, many=True)
+         # Return user data as JSON response
+         print("Statements fetched:", statements) 
+        #  return Response(serializer.data, status=status.HTTP_200_OK)
+         return JsonResponse(serializer.data,safe=False)
+        
+
+       

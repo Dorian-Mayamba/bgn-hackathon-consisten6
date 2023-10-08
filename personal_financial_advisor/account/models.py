@@ -9,12 +9,15 @@ class User(models.Model):
     age = models.DecimalField(decimal_places=1, max_digits=3,max_length=255,null=True)
     monthlyincome = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
 
-# class FinancialStatement(models.Model):
-#     monthlyincome = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
-#     rent_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
-#     food_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
-#     transportation_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
-#     utilities_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+class FinancialStatement(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True) 
+    monthlyincome = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    rent_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    food_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    transportation_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    utilities_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    miscellaneous_expense = models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
+    disposable_income =  models.DecimalField(decimal_places=1, max_digits=3, max_length=255,null=True)
 
 
 

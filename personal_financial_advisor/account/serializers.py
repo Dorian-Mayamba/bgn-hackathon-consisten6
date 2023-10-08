@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import User 
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,6 +28,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['name','email', 'password', 'age']   
+class FinancialStatementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FinancialStatement
+        fields = ['monthlyincome','rent_expense','utilities_expense','food_expense','transportation_expense','miscellaneous_expense']
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
