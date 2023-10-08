@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name','email', 'password', 'age']   
+        fields = ['id','name','email', 'password', 'age']   
 class FinancialStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancialStatement
