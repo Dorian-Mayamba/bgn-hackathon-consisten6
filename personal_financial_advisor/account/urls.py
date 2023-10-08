@@ -7,7 +7,8 @@ urlpatterns = [
     path('users/get', views.get_users, name="get users"),
     path('users/login', views.login, name="login users"),
     path('users/statement', views.create_statement, name="create statement"),
-    path('users/get_statement', views.get_statements, name="get statement")
+    path('users/get_statement', views.get_statements, name="get statement"),
+    path('users/update_statement', views.update_statements, name="update statement")
     # path("", views.hello, name="hello")
    
 ]

@@ -189,4 +189,32 @@ def get_statements(request):
          return JsonResponse(serializer.data,safe=False)
         
 
+@swagger_auto_schema(
+        method='patch',
+        request_body=FinancialStatementSerializer()
+)
+@api_view(['PATCH'])
+def update_statements(request):
+    try:
+        statement = FinancialStatement.objects.get(user=request.user) #would probably do user=user instead or sumn
+    except FinancialStatement.DoesNotExist:
+        return Response({'message': 'Statement not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "PATCH":
+        serializer = FinancialStatementSerializer(statement, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.update()
+            data = {
+                'message': 'success',
+                'data': serializer.data
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            data = {
+                'message': 'failed',
+                'error': serializer.errors
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
        
