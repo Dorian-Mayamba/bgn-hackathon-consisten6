@@ -11,14 +11,14 @@ from django.utils import timezone
 from .serializers import ChatSerializer
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
-openai_api_key = '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'
+openai_api_key = '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'
 openai.api_key = openai_api_key
 
 def ask_openai(message):
     response = openai.ChatCompletion.create(
         model = 'gpt-3.5-turbo',
         messages=[
-            {"role": "system", "content": "You are a helpful assistant"},
+            {"role": "system", "content": "You are a financial advisor assistant that gives responses in a simple and easy-to-understand format suitable for everyone."},
             {"role": "user", "content": message},
         ])
     answer = response.choices[0].message.content.strip()
