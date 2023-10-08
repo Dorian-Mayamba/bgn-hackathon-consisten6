@@ -27,11 +27,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','name','email', 'password', 'age']   
+        fields = ['id','first_name','last_name','email', 'password', 'age']   
 class FinancialStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancialStatement
-        fields = ['monthlyincome','rent_expense','utilities_expense','food_expense','transportation_expense','miscellaneous_expense']
+        fields = ['monthlyincome','rent_expense','utilities_expense','food_expense','transportation_expense','miscellaneous_expense', 'disposable_income', 'current_debt', 'time_to_pay', 'risk_tolerance']
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

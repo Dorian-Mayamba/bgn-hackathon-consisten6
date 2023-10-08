@@ -239,33 +239,6 @@ def update_statements(request, user_id):
                     request_body=StatementChatSerializer(),
                     operation_description="This is a function to create new users.",)
 @api_view(['POST'])
-# def chatbot(request):
-#     # chats = Chat.objects.filter(user=request.user)
-    
-
-#     if request.method == 'POST':
-#         serializer = ChatSerializer(data=request.data)
-
-#         if serializer.is_valid(): #validate the data that was passed
-#             message = serializer.data['message']
-#             response = ask_openai(message)
-
-
-#             # chat = Chat( message=message, response=response, created_at=timezone.now())
-#             # chat.save()
-#             serializer.save()
-#             data = {
-#                 'message' : 'success',
-#                 'data'  : serializer.data
-#             }
-#             return JsonResponse({'message':message, 'response': response})
-#         else:
-#             data = {
-#                 'message' : 'failed',
-#                 'error'  : serializer.errors
-#             }
-#             return Response(data, status=status.HTTP_400_BAD_REQUEST)
-        
 def Statementchatbot(request,user_id):
     """
     View to manage chatbot interaction.
