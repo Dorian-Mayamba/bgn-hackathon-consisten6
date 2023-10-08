@@ -5,21 +5,21 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django.contrib import auth
 import email
+import json
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from rest_framework import status 
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from .serializers import UserSerializer
-from django.contrib.auth import get_user_model
+from .serializers import UserSerializer, LoginSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from django.contrib.auth import authenticate
-from django.forms import model_to_dict
 from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import User
+from django.contrib.auth import login,logout
+from .backends import AccountBackend
 
 # Create your views here.
 
@@ -80,6 +80,31 @@ def create_account(request):
                 'error'  : serializer.errors
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        
+@swagger_auto_schema(
+        method='post',
+        request_body=LoginSerializer()
+)
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data['email']
+        password = data['password']
+        backend = AccountBackend()
+        user = backend.authenticate(request, username=username,password=password)
+        if user is not None:
+            serialized_user = UserSerializer(user)
+            return JsonResponse({
+                'message' : 'login success',
+                'data' : serialized_user.data
+            })
+        else:
+            return JsonResponse({
+                'message' : 'error'
+            })
+        
+
 
 @api_view(['GET'])
 def get_users(request):
