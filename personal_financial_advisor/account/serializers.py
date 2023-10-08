@@ -36,3 +36,11 @@ class FinancialStatementSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(max_length=255)   
+
+
+class StatementChatSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = SatatementChat
+        fields = ['message','created_at']
