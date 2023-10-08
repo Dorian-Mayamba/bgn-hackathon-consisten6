@@ -156,22 +156,30 @@ def get_users(request):
         request_body=FinancialStatementSerializer()
 )
 @api_view(['POST'])
-def create_statement(request):
-     if request.method == "POST":
-        #Allows user to signup or create account
-        serializer = FinancialStatementSerializer(data=request.data) #deserialize the data
-        
-        if serializer.is_valid(): #validate the data that was passed
+def create_statement(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "POST":
+        # Deserialize the data and set the user
+        data = request.data
+        data['user'] = user.id  # Set the user ID in the request data
+
+        serializer = FinancialStatementSerializer(data=data)
+
+        if serializer.is_valid():
             serializer.save()
             data = {
-                'message' : 'success',
-                'data'  : serializer.data
+                'message': 'success',
+                'data': serializer.data
             }
             return Response(data, status=status.HTTP_201_CREATED)
         else:
             data = {
-                'message' : 'failed',
-                'error'  : serializer.errors
+                'message': 'failed',
+                'error': serializer.errors
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -194,17 +202,26 @@ def get_statements(request):
         request_body=FinancialStatementSerializer()
 )
 @api_view(['PATCH'])
-def update_statements(request):
+def update_statements(request, user_id):
     try:
-        statement = FinancialStatement.objects.get(user=request.user) #would probably do user=user instead or sumn
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        statement = FinancialStatement.objects.get(user=user)
     except FinancialStatement.DoesNotExist:
         return Response({'message': 'Statement not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "PATCH":
-        serializer = FinancialStatementSerializer(statement, data=request.data, partial=True)
+        # Deserialize the data and set the user (if needed)
+        data = request.data
+        data['user'] = user.id  # Set the user ID in the request data (if needed)
+
+        serializer = FinancialStatementSerializer(statement, data=data, partial=True)
 
         if serializer.is_valid():
-            serializer.update()
+            serializer.save()
             data = {
                 'message': 'success',
                 'data': serializer.data
@@ -216,5 +233,3 @@ def update_statements(request):
                 'error': serializer.errors
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
-
-       
