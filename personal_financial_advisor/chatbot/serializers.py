@@ -5,9 +5,8 @@ from .models import Chat
 
 
 class ChatSerializer(serializers.ModelSerializer):
-
-
+    response = serializers.CharField(read_only=True)
     class Meta:
         model = Chat
-        fields = ['message','created_at']
+        fields = ['message','created_at', 'response']
         

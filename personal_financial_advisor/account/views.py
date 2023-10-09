@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template import loader
-from django.contrib import auth
 import email
 import json
 from rest_framework.response import Response
@@ -18,9 +17,10 @@ from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import User
+from chatbot.serializers import ChatSerializer
 from django.contrib.auth import login,logout
 from .backends import AccountBackend
-from chatbot.views import ask_openai
+from chatbot.views import ask_openai, ask_openai_1
 
 # Create your views here.
 
@@ -96,15 +96,43 @@ def login(request):
         user = backend.authenticate(request, username=username,password=password)
         if user is not None:
             serialized_user = UserSerializer(user)
-            return JsonResponse({
-                'message' : 'login success',
-                'data' : serialized_user.data
-            })
+            try:
+                financial_statement = user.financial_statements.all()
+                user_chats = user.chats.all()
+                user_chat_serializer = ChatSerializer(user_chats,many=True)
+                financial_statement_serializer = FinancialStatementSerializer(financial_statement, many=True)
+                return JsonResponse({
+                    'message' : 'login success',
+                    'data' : serialized_user.data,
+                    'financial_statement' : financial_statement_serializer.data,
+                    'chats':user_chat_serializer.data
+                })
+            except:
+                return JsonResponse({
+                    'message' : 'error',
+                    'data' : serialized_user.data
+                })
         else:
             return JsonResponse({
                 'message' : 'error'
             })
         
+
+def get_user(request, id):
+    user = User.objects.filter(id=id).first()
+    if user is not None:
+        user_serializer = UserSerializer(user)
+        user_financial_statements = user.financial_statements.all()
+        financial_statement_serializer = FinancialStatementSerializer(user_financial_statements, many=True)
+        return JsonResponse({
+            'success' : 'done',
+            'data' : user_serializer.data,
+            'financial_stmt' : financial_statement_serializer.data
+        })
+    else:
+        return JsonResponse({
+            'message' : 'error'
+        })
 
 @swagger_auto_schema(method='get')
 @api_view(['GET'])
@@ -169,9 +197,8 @@ def create_statement(request, user_id):
         data['user'] = user  # Set the user ID in the request data
 
         serializer = FinancialStatementSerializer(data=data)
-
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=user)
             data = {
                 'message': 'success',
                 'data': serializer.data
@@ -235,10 +262,10 @@ def update_statements(request, user_id):
             }
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
         
-@swagger_auto_schema(method='post', 
+@swagger_auto_schema(method='get', 
                     request_body=StatementChatSerializer(),
                     operation_description="This is a function to create new users.",)
-@api_view(['POST'])
+@api_view(['GET'])
 def Statementchatbot(request,user_id):
     """
     View to manage chatbot interaction.
@@ -248,8 +275,8 @@ def Statementchatbot(request,user_id):
     """
     user=User.objects.get(id=user_id)
 
-    if request.method == 'POST':
-        financial_statement = FinancialStatement.objects.get(user=user)  
+    if request.method == 'GET':
+        financial_statement = user.financial_statements.get(id=user_id)
         if financial_statement:
             # Manually set the message you want to send to the chatbot
             message_template = """   You are a financial advisor. What can you tell me about my financial situation below? Also, consider the following:
@@ -262,7 +289,7 @@ def Statementchatbot(request,user_id):
                     5. My current transpotation cost is {transportation}
                     6. My current utility cost is {utility}
                     7. My Miscellaneous cost are {miscellaneous}
-                    8. My Dispoable income is {dispoable}
+                    8. My Dispoable income is {disposable}
                     9. My current debt is {debt}
                     10. I want to pay my debt back in {months} months
                     11. My age is {age} years old
@@ -283,7 +310,7 @@ def Statementchatbot(request,user_id):
                 disposable = financial_statement.disposable_income,
                 debt = financial_statement.current_debt,
                 months = financial_statement.time_to_pay,
-                age = financial_statement.user.age,
+                age = 23,
                 goal = financial_statement.current_goal,
                 tolerance = financial_statement.risk_tolerance,
 
@@ -292,7 +319,7 @@ def Statementchatbot(request,user_id):
                 
             )    
                 # Call the chatbot function with the predefined message
-            response = ask_openai(message)
+            response = ask_openai_1(message)
 
             if response:
                 # Create a serializer instance manually to save the interaction

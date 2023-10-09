@@ -31,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
 class FinancialStatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = FinancialStatement
-        fields = ['monthlyincome','rent_expense','utilities_expense','food_expense','transportation_expense','miscellaneous_expense', 'disposable_income', 'current_debt', 'time_to_pay', 'risk_tolerance']
+        fields = ['user_id','monthlyincome','rent_expense','utilities_expense','food_expense','transportation_expense','miscellaneous_expense', 'disposable_income', 'current_debt', 'time_to_pay', 'risk_tolerance', 'current_goal', 'currency']
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
